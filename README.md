@@ -26,6 +26,12 @@ The server will be running at `http://localhost:3000`.
 
 ## 🛠 API Endpoints
 
+### Get All Users
+
+- **URL:** `/api/users`
+- **Method:** `GET`
+- **Description:** Returns a list of all users.
+
 ### Get User by ID
 
 - **URL:** `/api/users/:id`
