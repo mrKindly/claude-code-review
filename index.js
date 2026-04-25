@@ -30,21 +30,6 @@ app.get('/api/users', (req, res) => {
     res.status(200).json(users);
 });
 
-/**
- * GET /api/users/:id
- * Fetches a user by their ID.
- */
-app.get('/api/users/:id', (req, res) => {
-    const userId = req.params.id;
-
-    const user = users.find(u => u.id === userId);
-
-    if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-    }
-
-    res.status(200).json(user);
-});
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
