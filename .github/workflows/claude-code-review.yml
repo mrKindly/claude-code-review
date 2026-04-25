@@ -2,7 +2,7 @@ name: Claude Code Review
 
 on:
   pull_request:
-    types: [opened, synchronize, ready_for_review, reopened]
+    types: [ opened, synchronize, ready_for_review, reopened ]
     # Optional: Only run on specific file changes
     # paths:
     #   - "src/**/*.ts"
@@ -36,9 +36,21 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          plugin_marketplaces: 'https://github.com/anthropics/claude-code.git'
-          plugins: 'code-review@claude-code-plugins'
-          prompt: '/code-review:code-review ${{ github.repository }}/pull/${{ github.event.pull_request.number }}'
-          # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
-          # or https://code.claude.com/docs/en/cli-reference for available options
+          plugin_marketplaces: "https://github.com/anthropics/claude-code.git"
+          plugins: "code-review@claude-code-plugins"
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
 
+            You are an expert Senior Application Security Engineer performing an automated code review on a GitHub Pull Request. Your primary objective is to protect the application from data breaches and severe vulnerabilities.
+
+            Analyze the provided git diff and strictly follow these rules:
+
+            1. FOCUS ON SECURITY ONLY: Ignore all code styling, formatting, naming conventions, and documentation issues. Only flag critical security risks.
+            2. PII AND SENSITIVE DATA: Aggressively check for Personally Identifiable Information (PII) leaks. Ensure that API endpoints do not return sensitive database fields (e.g., password hashes, tax IDs, credit card tokens) to the client.
+            3. ACTIONABLE FEEDBACK: If you find a security vulnerability, you must provide the exact reason why it is dangerous and write a specific, concrete suggestion on how the developer should fix it.
+            4. TOOL USE: If a vulnerability is detected, you MUST use the `create_pull_request_review_comment` MCP tool to post your feedback inline at the exact file and line number of the vulnerable code. 
+            5. SILENT APPROVAL: If no critical security vulnerabilities are found, do not leave a summary comment or conversational text. Simply exit gracefully.
+
+          claude_args: |
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
