@@ -3,7 +3,6 @@ const app = express();
 const PORT = 3000;
 
 // Mock database: In-memory array of users
-// VULNERABILITY CONTEXT: This data contains highly sensitive Personally Identifiable Information (PII)
 const users = [
     {
         id: '1',
