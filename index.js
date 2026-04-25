@@ -31,18 +31,13 @@ const users = [
  */
 app.get('/api/users/:id', (req, res) => {
     const userId = req.params.id;
-    
-    // Find the user in our mock database
+
     const user = users.find(u => u.id === userId);
 
     if (!user) {
         return res.status(404).json({ error: 'User not found' });
     }
 
-    // 🚨 SECURITY VULNERABILITY 🚨
-    // We are returning the ENTIRE user object directly to the client.
-    // This exposes the passwordHash, SSN, and creditCardToken to anyone calling this API!
-    // A proper implementation would strip these fields or use a DTO (Data Transfer Object).
     res.status(200).json(user);
 });
 
